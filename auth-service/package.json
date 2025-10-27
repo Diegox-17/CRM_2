@@ -1,1 +1,20 @@
-
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "description": "Microservicio para autenticación, usuarios y roles",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",    // Para encriptar contraseñas
+    "dotenv": "^16.3.1",       // Para gestionar variables de entorno (.env)
+    "express": "^4.18.2",      // El framework para construir nuestra API
+    "jsonwebtoken": "^9.0.2",// Para crear los tokens de sesión (JWT)
+    "pg": "^8.11.3"            // El cliente para conectar con PostgreSQL
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"      // Herramienta para reiniciar el servidor automáticamente al detectar cambios
+  }
+}
