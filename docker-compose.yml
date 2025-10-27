@@ -2,28 +2,29 @@ version: '3.8'
 
 services:
   # Servicio de Autenticación
-  auth: # Nombre corto y claro del servicio
+  auth:
     build:
       context: ./auth-service
-    container_name: crm_auth # Nombre explícito y organizado del contenedor
+    container_name: crm_auth
     restart: unless-stopped
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgres://consilium_user:supersecretpassword@crm_db:5432/consilium_db
       - PORT=3000
-      # No exponemos puertos a la máquina host (ej. - "3001:3000")
-      # NGINX Proxy Manager se comunicará directamente con el contenedor a través de la red compartida.
     volumes:
-      - ./auth-service/src:/usr/src/app/src
+      # Monta todo el directorio del servicio para desarrollo en tiempo real
+      - ./auth-service:/usr/src/app
+      # Usa un volumen anónimo para proteger los node_modules instalados dentro del contenedor
+      - /usr/src/app/node_modules
+    networks:
+      - proxy-net
     depends_on:
       - db
-    networks: # Lo conectamos a la red del proxy
-      - proxy-net
 
   # Base de Datos PostgreSQL
   db:
     image: postgis/postgis:15-3.4
-    container_name: crm_db # Nombre organizado
+    container_name: crm_db
     restart: unless-stopped
     environment:
       - POSTGRES_USER=consilium_user
@@ -31,23 +32,12 @@ services:
       - POSTGRES_DB=consilium_db
     volumes:
       - pgdata:/var/lib/postgresql/data
-    # No es necesario que la DB esté en la red del proxy, solo necesita ser visible para los otros servicios.
-    # Pero para mantenerlo simple por ahora, la dejamos. Si quisieramos más seguridad, crearíamos otra red interna.
     networks:
       - proxy-net
-
-# Futuro servicio de Frontend (ejemplo)
-# frontend:
-#   build: ./frontend-service
-#   container_name: crm_frontend
-#   restart: unless-stopped
-#   networks:
-#     - proxy-net
 
 volumes:
   pgdata:
 
-# Definimos la red externa a la que nos vamos a conectar
 networks:
   proxy-net:
     external: true
