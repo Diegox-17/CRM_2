@@ -13,6 +13,7 @@ services:
       - NODE_ENV=development
       - DATABASE_URL=postgres://consilium_user:supersecretpassword@crm_db:5432/consilium_db
       - PORT=3000
+      - JWT_SECRET=este-es-un-secreto-muy-largo-y-dificil-de-adivinar
     depends_on:
       db:
         # LÍNEA MODIFICADA: Ahora 'auth' esperará a que 'db' esté saludable
