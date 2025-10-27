@@ -1,1 +1,34 @@
+version: '3.8'
 
+services:
+  # Servicio 1: Nuestra API de autenticación
+  auth-service:
+    build:
+      context: ./auth-service  # Le dice a Docker que construya la imagen usando el Dockerfile en la carpeta ./auth-service
+    container_name: auth-service
+    ports:
+      - "3001:3000"  # Mapea el puerto 3001 de tu máquina al puerto 3000 del contenedor
+    volumes:
+      - ./auth-service/src:/usr/src/app/src # Sincroniza tu código local con el del contenedor para ver cambios en tiempo real
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://consilium_user:supersecretpassword@db:5432/consilium_db
+      - PORT=3000
+    depends_on:
+      - db  # Le dice a Docker que este servicio no debe iniciar hasta que el servicio 'db' esté listo
+
+  # Servicio 2: Nuestra Base de Datos PostgreSQL con PostGIS
+  db:
+    image: postgis/postgis:15-3.4 # Usamos una imagen oficial que ya incluye PostgreSQL y PostGIS
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=consilium_user
+      - POSTGRES_PASSWORD=supersecretpassword
+      - POSTGRES_DB=consilium_db
+    ports:
+      - "5433:5432" # Mapea el puerto 5433 de tu máquina al 5432 de la base de datos
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persiste los datos de la BD aunque apaguemos el contenedor
+
+volumes:
+  pgdata: # Define el volumen para que Docker lo gestione
