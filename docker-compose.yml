@@ -27,7 +27,7 @@ services:
     container_name: crm_db
     restart: unless-stopped
     environment:
-      - POSTGUS_USER=consilium_user
+      - POSTGRES_USER=consilium_user
       - POSTGRES_PASSWORD=supersecretpassword
       - POSTGRES_DB=consilium_db
     # SECCIÓN DE VOLÚMENES PARA LA BASE DE DATOS (ESTA ES LA CORRECTA)
