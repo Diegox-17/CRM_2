@@ -26,8 +26,6 @@ services:
       - POSTGRES_USER=consilium_user
       - POSTGRES_PASSWORD=supersecretpassword
       - POSTGRES_DB=consilium_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     networks:
       - proxy-net
 
