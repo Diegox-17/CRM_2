@@ -1,34 +1,53 @@
 version: '3.8'
 
 services:
-  # Servicio 1: Nuestra API de autenticación
-  auth-service:
+  # Servicio de Autenticación
+  auth: # Nombre corto y claro del servicio
     build:
-      context: ./auth-service  # Le dice a Docker que construya la imagen usando el Dockerfile en la carpeta ./auth-service
-    container_name: auth-service
-    ports:
-      - "3001:3000"  # Mapea el puerto 3001 de tu máquina al puerto 3000 del contenedor
-    volumes:
-      - ./auth-service/src:/usr/src/app/src # Sincroniza tu código local con el del contenedor para ver cambios en tiempo real
+      context: ./auth-service
+    container_name: crm_auth # Nombre explícito y organizado del contenedor
+    restart: unless-stopped
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgres://consilium_user:supersecretpassword@db:5432/consilium_db
+      - DATABASE_URL=postgres://consilium_user:supersecretpassword@crm_db:5432/consilium_db
       - PORT=3000
+      # No exponemos puertos a la máquina host (ej. - "3001:3000")
+      # NGINX Proxy Manager se comunicará directamente con el contenedor a través de la red compartida.
+    volumes:
+      - ./auth-service/src:/usr/src/app/src
     depends_on:
-      - db  # Le dice a Docker que este servicio no debe iniciar hasta que el servicio 'db' esté listo
+      - db
+    networks: # Lo conectamos a la red del proxy
+      - proxy-net
 
-  # Servicio 2: Nuestra Base de Datos PostgreSQL con PostGIS
+  # Base de Datos PostgreSQL
   db:
-    image: postgis/postgis:15-3.4 # Usamos una imagen oficial que ya incluye PostgreSQL y PostGIS
-    container_name: postgres-db
+    image: postgis/postgis:15-3.4
+    container_name: crm_db # Nombre organizado
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=consilium_user
       - POSTGRES_PASSWORD=supersecretpassword
       - POSTGRES_DB=consilium_db
-    ports:
-      - "5433:5432" # Mapea el puerto 5433 de tu máquina al 5432 de la base de datos
     volumes:
-      - pgdata:/var/lib/postgresql/data # Persiste los datos de la BD aunque apaguemos el contenedor
+      - pgdata:/var/lib/postgresql/data
+    # No es necesario que la DB esté en la red del proxy, solo necesita ser visible para los otros servicios.
+    # Pero para mantenerlo simple por ahora, la dejamos. Si quisieramos más seguridad, crearíamos otra red interna.
+    networks:
+      - proxy-net
+
+# Futuro servicio de Frontend (ejemplo)
+# frontend:
+#   build: ./frontend-service
+#   container_name: crm_frontend
+#   restart: unless-stopped
+#   networks:
+#     - proxy-net
 
 volumes:
-  pgdata: # Define el volumen para que Docker lo gestione
+  pgdata:
+
+# Definimos la red externa a la que nos vamos a conectar
+networks:
+  proxy-net:
+    external: true
