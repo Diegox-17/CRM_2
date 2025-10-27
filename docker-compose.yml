@@ -27,18 +27,26 @@ services:
     container_name: crm_db
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=consilium_user
+      - POSTGUS_USER=consilium_user
       - POSTGRES_PASSWORD=supersecretpassword
       - POSTGRES_DB=consilium_db
+    # SECCIÓN DE VOLÚMENES PARA LA BASE DE DATOS (ESTA ES LA CORRECTA)
+    volumes:
+      # Este volumen guarda los datos de la BD de forma persistente
+      - pgdata:/var/lib/postgresql/data
+      # Este volumen ejecuta nuestro script para crear las tablas la primera vez
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      # La DB solo necesita estar en la red interna
       - crm-internal
     healthcheck:
-      # pg_isready es una utilidad de postgres para comprobar si el servidor está aceptando conexiones
       test: ["CMD-SHELL", "pg_isready -U consilium_user -d consilium_db"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+# CLAVE: Definimos el volumen 'pgdata' para que Docker lo gestione
+volumes:
+  pgdata:
 
 networks:
   proxy-net:
