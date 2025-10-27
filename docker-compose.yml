@@ -13,9 +13,6 @@ services:
       - NODE_ENV=development
       - DATABASE_URL=postgres://consilium_user:supersecretpassword@crm_db:5432/consilium_db
       - PORT=3000
-    volumes:
-      - ./auth-service:/usr/src/app
-      - /usr/src/app/node_modules
     networks:
       - proxy-net
     depends_on:
@@ -33,9 +30,6 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - proxy-net
-
-volumes:
-  pgdata:
 
 networks:
   proxy-net:
