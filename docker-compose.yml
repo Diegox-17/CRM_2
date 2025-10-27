@@ -1,14 +1,16 @@
 version: '3.8'
 
 services:
-  # Servicio de Autenticación
   auth:
-    build:
-      context: ./auth-service
     container_name: crm_auth
+    build:
+      # El contexto es el directorio raíz (donde está este archivo).
+      context: .
+      # La ruta explícita al Dockerfile que debe usar.
+      dockerfile: ./auth-service/Dockerfile
     restart: unless-stopped
     environment:
-      - NODE_ENV=production # Cambiamos a production para el despliegue
+      - NODE_ENV=development
       - DATABASE_URL=postgres://consilium_user:supersecretpassword@crm_db:5432/consilium_db
       - PORT=3000
     depends_on:
@@ -20,7 +22,6 @@ services:
       - proxy-net
       - crm-internal
 
-  # Base de Datos PostgreSQL
   db:
     image: postgis/postgis:15-3.4
     container_name: crm_db
@@ -29,12 +30,9 @@ services:
       - POSTGRES_USER=consilium_user
       - POSTGRES_PASSWORD=supersecretpassword
       - POSTGRES_DB=consilium_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     networks:
       # La DB solo necesita estar en la red interna
       - crm-internal
-    # NUEVA SECCIÓN: La prueba de salud
     healthcheck:
       # pg_isready es una utilidad de postgres para comprobar si el servidor está aceptando conexiones
       test: ["CMD-SHELL", "pg_isready -U consilium_user -d consilium_db"]
@@ -42,14 +40,8 @@ services:
       timeout: 5s
       retries: 5
 
-volumes:
-  pgdata:
-
-# Definición de nuestras redes
 networks:
-  # La red externa para NGINX Proxy Manager
   proxy-net:
     external: true
-  # NUEVA RED: Nuestra red interna privada para la comunicación entre servicios
   crm-internal:
     driver: bridge
