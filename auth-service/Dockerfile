@@ -1,24 +1,22 @@
-# Usamos una imagen oficial de Node.js como base.
+# Usamos una imagen oficial de Node.js
 FROM node:20-alpine
 
-# Establecemos el directorio de trabajo dentro del contenedor.
+# Creamos el directorio de trabajo
 WORKDIR /usr/src/app
 
-# Copiamos los archivos de dependencias.
-COPY package*.json ./
+# Copiamos los archivos de dependencias DESDE EL CONTEXTO (la raíz del proyecto)
+# a la carpeta de trabajo actual (WORKDIR)
+COPY auth-service/package*.json ./
 
-# --- PASO DE DEPURACIÓN ---
-# Listamos el contenido del directorio de trabajo para verificar si el COPY anterior funcionó.
-RUN ls -la
-
-# Instalamos las dependencias del proyecto.
+# Instalamos las dependencias
 RUN npm install
 
-# Copiamos el resto del código fuente de nuestra aplicación.
-COPY . .
+# Copiamos el resto del código de la aplicación DESDE EL CONTEXTO
+# a la carpeta de trabajo actual (WORKDIR)
+COPY auth-service/. .
 
-# Exponemos el puerto 3000
+# Exponemos el puerto que usará la aplicación
 EXPOSE 3000
 
-# El comando que se ejecutará cuando el contenedor se inicie.
+# El comando para iniciar la aplicación
 CMD [ "npm", "run", "dev" ]
