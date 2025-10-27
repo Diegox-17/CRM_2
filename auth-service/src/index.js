@@ -1,34 +1,29 @@
 const express = require('express');
 require('dotenv').config();
-const { Pool } = require('pg'); // Importamos el cliente de PostgreSQL
+const { pool } = require('./db'); // Importamos la conexión
+const authRoutes = require('./routes/authRoutes'); // Importamos nuestras rutas
 
-// Creamos una instancia de la aplicación
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de la conexión a la base de datos
-// La variable DATABASE_URL la lee automáticamente desde el entorno que definimos en docker-compose.yml
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+// Middleware para que Express pueda entender JSON en el cuerpo de las peticiones
+app.use(express.json());
 
-// Función asíncrona para probar la conexión
+// Función para probar la conexión a la BD
 const checkDbConnection = async () => {
-  try {
-    await pool.query('SELECT NOW()'); // Hacemos una consulta simple para verificar la conexión
-    console.log('Conexión a la base de datos establecida con éxito.');
-  } catch (error) {
-    console.error('Error al conectar con la base de datos:', error);
-  }
+    try {
+        await pool.query('SELECT NOW()');
+        console.log('Conexión a la base de datos establecida con éxito.');
+    } catch (error) {
+        console.error('Error al conectar con la base de datos:', error);
+    }
 };
 
 // Rutas de la API
-app.get('/api/auth', (req, res) => {
-  res.status(200).json({ message: '¡El microservicio de autenticación está vivo y responde!' });
-});
+app.use('/api/auth', authRoutes);
 
 // Iniciamos el servidor
 app.listen(PORT, () => {
-  console.log(`Servicio de autenticación corriendo en el puerto ${PORT}`);
-  checkDbConnection(); // Llamamos a la función de verificación cuando el servidor arranca
+    console.log(`Servicio de autenticación corriendo en el puerto ${PORT}`);
+    checkDbConnection();
 });
