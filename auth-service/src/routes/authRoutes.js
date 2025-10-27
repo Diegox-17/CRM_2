@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { pool } = require('../db'); // Importaremos la conexión a la BD desde un archivo separado
 
 const router = express.Router();
@@ -37,6 +38,54 @@ router.post('/register', async (req, res) => {
             return res.status(409).json({ message: 'El correo electrónico ya está registrado.' });
         }
         console.error('Error en el registro de usuario:', error);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+});
+
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email y contraseña son obligatorios.' });
+    }
+
+    try {
+        // 1. Buscar al usuario por su email
+        const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({ message: 'Credenciales inválidas.' }); // No decimos si es el user o el pass por seguridad
+        }
+        const user = userResult.rows[0];
+
+        // 2. Comparar la contraseña proporcionada con el hash almacenado
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Credenciales inválidas.' });
+        }
+
+        // 3. Si las credenciales son correctas, crear el JWT
+        const payload = {
+            id: user.id,
+            email: user.email
+            // Aquí podríamos añadir roles en el futuro
+        };
+
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' } // El token expira en 1 hora
+        );
+
+        // 4. Enviar el token al cliente
+        res.status(200).json({
+            message: 'Inicio de sesión exitoso.',
+            token: token
+        });
+
+    } catch (error) {
+        console.error('Error en el inicio de sesión:', error);
         res.status(500).json({ message: 'Error interno del servidor.' });
     }
 });
