@@ -16,8 +16,6 @@ services:
       - JWT_SECRET=este-es-un-secreto-muy-largo-y-dificil-de-adivinar
     depends_on:
       - db
-        # LÍNEA MODIFICADA: Ahora 'auth' esperará a que 'db' esté saludable
-        condition: service_healthy
     networks:
       # Lo conectamos a ambas redes
       - proxy-net
