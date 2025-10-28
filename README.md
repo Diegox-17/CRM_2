@@ -4,7 +4,7 @@
 
 CRM Consilium es un sistema de gestión de relaciones con clientes (CRM) y de proyectos, diseñado a medida para las necesidades de una consultora de ingeniería y medio ambiente. Construido sobre una arquitectura de microservicios, el sistema está diseñado para ser altamente escalable, resiliente y personalizable, con el objetivo de automatizar y optimizar los flujos de trabajo de la empresa.
 
-Esta primera versión establece la base fundamental del sistema: el servicio de autenticación y gestión de usuarios.
+Esta primera versión, establece la base fundamental del sistema: el servicio de autenticación y gestión de usuarios.
 
 ## Características Principales (v1.0.1)
 
