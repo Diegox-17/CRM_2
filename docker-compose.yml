@@ -24,9 +24,9 @@ services:
   db:
     container_name: crm_db
     build:
-      context: .
+      context: ./database
       # La ruta explícita al Dockerfile que debe usar.
-      dockerfile: ./auth-service/database/Dockerfile
+      dockerfile: Dockerfile
     restart: unless-stopped
     environment:
       - POSTGRES_USER=consilium_user
