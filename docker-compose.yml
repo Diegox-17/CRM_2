@@ -15,7 +15,8 @@ services:
       - PORT=3000
       - JWT_SECRET=este-es-un-secreto-muy-largo-y-dificil-de-adivinar
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       # Lo conectamos a ambas redes
       - proxy-net
@@ -38,6 +39,12 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - crm-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U consilium_user -d consilium_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s # Le damos 20s para que arranque antes de que los fallos cuenten
 
 # CLAVE: Definimos el volumen 'pgdata' para que Docker lo gestione
 volumes:
