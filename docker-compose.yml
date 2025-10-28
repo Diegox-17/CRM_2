@@ -24,7 +24,7 @@ services:
   db:
     container_name: crm_db
     build:
-      context: ./database
+      context: ./auth-service/database
       # La ruta explícita al Dockerfile que debe usar.
       dockerfile: Dockerfile
     restart: unless-stopped
