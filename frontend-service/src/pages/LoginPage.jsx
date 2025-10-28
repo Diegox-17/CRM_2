@@ -1,5 +1,6 @@
 // src/pages/LoginPage.jsx
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import apiClient from '../services/api';
 
@@ -8,6 +9,7 @@ function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,8 +17,7 @@ function LoginPage() {
         try {
             const response = await apiClient.post('/auth/login', { email, password });
             login(response.data.token);
-            // Aquí, en el futuro, redirigiremos al Dashboard
-            alert('¡Inicio de sesión exitoso!');
+            navigate('/');
         } catch (err) {
             setError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
             console.error(err);
