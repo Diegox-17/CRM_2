@@ -168,3 +168,7 @@ El nuevo servicio debe ser añadido al `docker-compose.yml` principal. El siguie
       - proxy-net
       # Siempre debe estar en la red interna para hablar con la BD y otros servicios
       - crm-internal
+
+## 6. Tarea Específica a Desarrollar
+[AQUÍ SE INCLUIRÁ LA DESCRIPCIÓN DETALLADA DEL NUEVO MICROSERVICIO]
+Ejemplo: "Tu tarea es crear el microservicio de 'Proyectos'. Debe exponer endpoints CRUD (Crear, Leer, Actualizar, Eliminar) para gestionar los proyectos de la consultora. Un proyecto debe tener un nombre, un cliente asociado, una fecha de inicio y una fecha de fin. Debes crear una nueva tabla projects en la base de datos..."
