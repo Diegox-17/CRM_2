@@ -45,6 +45,16 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s # Le damos 20s para que arranque antes de que los fallos cuenten
+  
+  frontend:
+    container_name: crm_frontend
+    build:
+      context: ./frontend-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      # Solo necesita estar en la red del proxy para ser accesible desde el exterior
+      - proxy-net
 
 # CLAVE: Definimos el volumen 'pgdata' para que Docker lo gestione
 volumes:
