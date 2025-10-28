@@ -1,5 +1,6 @@
 // src/pages/DashboardPage.jsx
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 function DashboardPage() {
     const { logout } = useContext(AuthContext);
@@ -13,7 +14,7 @@ function DashboardPage() {
         <div>
             <h2>Dashboard Principal</h2>
             <p>¡Bienvenido al CRM de Consilium!</p>
-            {/* Más adelante añadiremos el botón de logout aquí */}
+            <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
     );
 }
