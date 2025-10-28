@@ -83,8 +83,12 @@ Respuesta Exitosa (201 Created):
 }
 ```
 
-POST /api/auth/login
+### Login
+
+#### `POST /api/auth/login`
 Inicia sesión y devuelve un token de autenticación.
+
+**Body (JSON):**
 ```json
 {
     "email": "correo@ejemplo.com",
