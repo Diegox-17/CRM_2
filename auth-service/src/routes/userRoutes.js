@@ -18,6 +18,7 @@ router.get('/me', authenticateToken, async (req, res) => {
         }
         res.json(userProfile.rows[0]);
     } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
         res.status(500).json({ message: 'Error interno del servidor.' });
     }
 });
@@ -30,6 +31,7 @@ router.get('/', [authenticateToken, authorizeRoles('Superadmin', 'Admin')], asyn
         const allUsers = await pool.query("SELECT id, first_name, last_name, email, position, is_active FROM users ORDER BY created_at DESC");
         res.json(allUsers.rows);
     } catch (error) {
+        console.error('Error al obtener todos los usuarios:', error);
         res.status(500).json({ message: 'Error interno del servidor.' });
     }
 });
