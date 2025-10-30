@@ -65,20 +65,28 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Credenciales inválidas.' });
         }
 
-        // 3. Si las credenciales son correctas, crear el JWT
+        // 3. ¡NUEVO! Buscar los roles del usuario
+        const userRolesResult = await pool.query(
+            "SELECT r.name FROM roles r JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = $1",
+            [user.id]
+        );
+        const roles = userRolesResult.rows.map(r => r.name); // ej: ['Admin', 'User']
+
+        // 4. Si las credenciales son correctas, crear el JWT
         const payload = {
             id: user.id,
             email: user.email
-            // Aquí podríamos añadir roles en el futuro
+            roles: roles
         };
 
+        // 5. Firmar el token
         const token = jwt.sign(
             payload,
             process.env.JWT_SECRET,
             { expiresIn: '1h' } // El token expira en 1 hora
         );
 
-        // 4. Enviar el token al cliente
+        // 6. Enviar el token al cliente
         res.status(200).json({
             message: 'Inicio de sesión exitoso.',
             token: token

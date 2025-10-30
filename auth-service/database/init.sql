@@ -12,6 +12,9 @@ CREATE TABLE users (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(50), -- NUEVO CAMPO
+    position VARCHAR(100),    -- NUEVO CAMPO (puesto de trabajo)
+    is_active BOOLEAN NOT NULL DEFAULT true, -- NUEVO CAMPO (para desactivar usuarios en lugar de borrarlos)
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
