@@ -63,7 +63,7 @@ function EditUserForm({ userToEdit, onUserUpdated, onCancel }) {
                                 name={role.name}
                                 checked={!!selectedRoles[role.name]}
                                 onChange={handleRoleChange}
-                                disabled={!currentUser.roles.includes('Superadmin')}
+                                ddisabled={!(currentUser && currentUser.roles && currentUser.roles.includes('Superadmin'))}
                             />
                             {role.name}
                         </label>

@@ -61,11 +61,10 @@ function UserManagementPage() {
     return (
         <div>
             <h2>Gestión de Usuarios</h2>
-            
-            {/* --- LÓGICA DE VISIBILIDAD DE BOTONES --- */}
-            {currentUser.roles.includes('Superadmin') || currentUser.roles.includes('Admin') ? (
+
+            {currentUser && currentUser.roles && (currentUser.roles.includes('Superadmin') || currentUser.roles.includes('Admin')) && (
                 !isCreating && !editingUser && <button onClick={() => setIsCreating(true)}>Crear Nuevo Usuario</button>
-            ) : null}
+            )}
             
             {isCreating && <CreateUserForm onUserCreated={handleUserCreated} onCancel={() => setIsCreating(false)} />}
             {editingUser && <EditUserForm userToEdit={editingUser} onUserUpdated={handleUserUpdated} onCancel={() => setEditingUser(null)} />}
@@ -91,8 +90,7 @@ function UserManagementPage() {
                                 <td>
                                     <button onClick={() => setEditingUser(user)}>Editar</button>
                                     
-                                    {/* El botón de Deshabilitar solo lo ve el Superadmin */}
-                                    {currentUser.roles.includes('Superadmin') && (
+                                    {currentUser && currentUser.roles && currentUser.roles.includes('Superadmin') && (
                                         <button onClick={() => handleDisableUser(user.id, user.is_active)}>
                                             {user.is_active ? 'Deshabilitar' : 'Habilitar'}
                                         </button>
