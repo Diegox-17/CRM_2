@@ -27,3 +27,9 @@ EXPOSE 80
 
 # El comando por defecto de la imagen de NGINX se encargará de iniciar el servidor
 CMD ["nginx", "-g", "daemon off;"]
+
+# Esto sobrescribirá la configuración por defecto de NGINX
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
