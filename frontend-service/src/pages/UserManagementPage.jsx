@@ -6,6 +6,9 @@ import EditUserForm from '../components/EditUserForm';
 import { AuthContext } from '../context/AuthContext';
 
 function UserManagementPage() {
+
+    console.log("UserManagementPage: Renderizando componente.");
+
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');

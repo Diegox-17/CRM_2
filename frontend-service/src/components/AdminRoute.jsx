@@ -6,6 +6,8 @@ import { AuthContext } from '../context/AuthContext';
 function AdminRoute({ children }) {
     const { user } = useContext(AuthContext);
 
+    console.log("AdminRoute: Verificando usuario:", user);
+
     // Si no hay usuario o si el usuario no tiene roles o si sus roles no incluyen 'Admin' o 'Superadmin'
     if (!user || !user.roles || (!user.roles.includes('Admin') && !user.roles.includes('Superadmin'))) {
         // Redirige al dashboard principal (o a una página de "acceso denegado")
